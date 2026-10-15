@@ -2,3 +2,10 @@
 [build]
   command = "node tools/build.mjs"
   publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Avisa a Bing (Edge), Yandex, Seznam y Naver después de cada publicación
+[[plugins]]
+  package = "/netlify/plugins/indexnow"

@@ -26,6 +26,8 @@ const products = walk('data/products').filter(f => f.endsWith('.js')).sort();
 // El servidor de publicación puede indicar el dominio y la subcarpeta reales
 // (p. ej. GitHub Pages: SITE_URL=https://usuario.github.io SITE_BASE=/repo/)
 if (process.env.SITE_URL) ctx.CT.site.url = process.env.SITE_URL.replace(/\/$/, '');
+// Netlify indica la dirección principal de la web (o el dominio propio) en URL
+else if (process.env.NETLIFY && process.env.URL) { ctx.CT.site.url = process.env.URL.replace(/\/$/, ''); ctx.CT.site.base = '/'; }
 if (process.env.SITE_BASE) ctx.CT.site.base = ('/' + process.env.SITE_BASE + '/').replace(/\/+/g, '/');
 
 // Versión para invalidar la caché cuando cambia cualquier archivo

@@ -9,7 +9,7 @@ window.CT = window.CT || {};
 CT.site = {
   name: 'Comparandia',
   slogan: 'Compara todo. Elige mejor.',
-  url: 'https://comparandia.com', // ← tu dominio real, sin barra final
+  url: 'https://comparandia.netlify.app', // dirección pública, sin barra final (en Netlify se detecta sola)
   base: '/',                          // subcarpeta si la web no está en la raíz (p. ej. '/comparandia/')
   lang: 'es',
   locale: 'es_ES',
