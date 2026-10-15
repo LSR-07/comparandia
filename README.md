@@ -25,6 +25,10 @@ Cada compilación muestra un resumen: páginas indexables, comparaciones generad
 
 ## 2. Publicar gratis
 
+La web está publicada en **https://comparandia.netlify.app** (Netlify, plan gratuito). Cada cambio que se sube a la rama `main` de GitHub se compila y se publica solo, y después se avisa a Bing con IndexNow. Cada publicación gasta créditos del plan gratuito de Netlify: para subir cambios sin publicarlos, pon `[skip netlify]` en el mensaje del commit.
+
+Para montarla en otra cuenta:
+
 1. Sube el proyecto a un repositorio de GitHub (la carpeta `dist/` no hace falta: se genera sola).
 2. Conéctalo a **Netlify** o **Cloudflare Pages** (plan gratuito):
    - Comando de compilación: `node tools/build.mjs`
