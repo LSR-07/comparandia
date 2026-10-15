@@ -46,3 +46,24 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Tras publicar, avisa a Bing (Edge), Yandex, Seznam y Naver con IndexNow
+  indexnow:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Avisar a los buscadores
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: |
+          export SITE_URL=$(echo "$BASE_URL" | sed -E 's#^(https?://[^/]+).*#\1#')
+          export SITE_BASE="$BASE_PATH/"
+          node tools/build.mjs
+          node tools/indexnow.mjs

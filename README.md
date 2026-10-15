@@ -54,6 +54,7 @@ Si publicas en una subcarpeta (por ejemplo, GitHub Pages de proyecto), cambia ta
 | Contenido original | Cada comparativa redacta con sus datos: introducción, diferencias clave con porcentajes, análisis por apartados, «¿Cuál elegir?», preguntas frecuentes y notas sobre datos no publicados. Cada ficha indica en qué lidera o se queda atrás frente al resto del catálogo. |
 | Populares y nuevas | Secciones en el inicio y en cada categoría. Populares: lista editorial en `data/seo.js`. Nuevas: las de los modelos más recientes, más las que añadas a mano con fecha. |
 | Search Console | Verificación por meta etiqueta o archivo HTML desde `data/seo.js` (ver abajo). |
+| Bing, Edge y otros | IndexNow: al publicar en GitHub, `tools/indexnow.mjs` avisa automáticamente a Bing (Edge), Yandex, Seznam y Naver de todas las páginas del sitemap. La clave pública está en `CT.site.indexNowKey`. |
 
 ### Filtro de calidad: solo se indexa lo que aporta
 

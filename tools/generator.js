@@ -392,6 +392,7 @@
       icons: [{ src: site.base + 'favicon.svg', sizes: 'any', type: 'image/svg+xml' }]
     }, null, 2);
     if (site.googleFile) files[site.googleFile] = 'google-site-verification: ' + site.googleFile;
+    if (site.indexNowKey) files[site.indexNowKey + '.txt'] = site.indexNowKey;
 
     report.sitemapUrls = sitemap.length;
     return { files: files, report: report };
