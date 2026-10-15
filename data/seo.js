@@ -17,7 +17,7 @@ CT.site = {
 
   // Google Search Console (opcional). Rellena UNO de los dos métodos de verificación:
   googleVerification: '',             // valor de content="" de la meta google-site-verification
-  googleFile: '',                     // nombre del archivo HTML que da Google, p. ej. 'google1a2b3c.html'
+  googleFile: 'google612d5567c32ec1f0.html',                     // nombre del archivo HTML que da Google, p. ej. 'google1a2b3c.html'
   bingVerification: '',               // Bing Webmaster Tools (msvalidate.01), opcional
 
   // IndexNow: avisa a Bing (Edge), Yandex, Seznam y Naver de cada página nueva o
