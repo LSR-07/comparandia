@@ -30,6 +30,11 @@ const basePath = urls.reduce((acc, u) => {
   return acc;
 }, first.pathname.replace(/[^/]*$/, ''));
 const keyLocation = `${first.origin}${basePath}${key}.txt`;
+// Bing solo valida la clave en la raíz del dominio (no en subcarpetas como usuario.github.io/repo/)
+if (basePath !== '/') {
+  console.log(`IndexNow necesita que la web esté en la raíz de su dominio (ahora: ${first.origin}${basePath}). Se activará al usar un dominio propio.`);
+  process.exit(0);
+}
 
 // Justo después de publicar, la clave puede tardar en estar visible: esperamos a que lo esté
 for (let tries = 0; ; tries++) {
