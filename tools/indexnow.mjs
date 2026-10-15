@@ -31,6 +31,14 @@ const basePath = urls.reduce((acc, u) => {
 }, first.pathname.replace(/[^/]*$/, ''));
 const keyLocation = `${first.origin}${basePath}${key}.txt`;
 
+// Justo después de publicar, la clave puede tardar en estar visible: esperamos a que lo esté
+for (let tries = 0; ; tries++) {
+  const ok = await fetch(keyLocation, { cache: 'no-store' }).then(r => r.ok && r.text()).then(t => t && t.trim() === key).catch(() => false);
+  if (ok) break;
+  if (tries >= 20) { console.log(`La clave no está accesible en ${keyLocation}; se intentará en la próxima publicación.`); process.exit(0); }
+  await new Promise(r => setTimeout(r, 15000));
+}
+
 for (let i = 0; i < urls.length; i += 10000) {
   const urlList = urls.slice(i, i + 10000);
   const res = await fetch('https://api.indexnow.org/indexnow', {
