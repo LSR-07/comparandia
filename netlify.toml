@@ -1,0 +1,4 @@
+# Netlify: compila la web y publica dist/ (Cloudflare Pages: mismo comando y carpeta)
+[build]
+  command = "node tools/build.mjs"
+  publish = "dist"

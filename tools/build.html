@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Compilar Comparandia</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; color: #18181b; background: #fff; }
+  h1 { font-size: 22px; } button { font: inherit; padding: 10px 18px; border-radius: 8px; border: 0; background: #1a56db; color: #fff; cursor: pointer; }
+  pre { background: #f4f4f5; padding: 14px; border-radius: 8px; white-space: pre-wrap; }
+  @media (prefers-color-scheme: dark) { body { background: #121214; color: #ededf0; } pre { background: #1c1c1f; } }
+</style>
+</head>
+<body>
+<h1>Compilar Comparandia sin Node.js</h1>
+<p>Genera la web estática en <code>dist/</code> usando este navegador y el servidor local (<code>tools/serve.ps1 -Dev</code>).</p>
+<button id="go">Compilar ahora</button>
+<pre id="log">Listo.</pre>
+<script src="../data/catalog.js"></script>
+<script src="../data/seo.js"></script>
+<script src="../static/js/icons.js"></script>
+<script src="../static/js/core.js"></script>
+<script src="../static/js/render.js"></script>
+<script src="generator.js"></script>
+<script>
+(function () {
+  var log = document.getElementById('log');
+  var say = function (t) { log.textContent += '\n' + t; };
+  var STATIC = ['css/styles.css', 'js/icons.js', 'js/core.js', 'js/render.js', 'js/app.js'];
+
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = function () { rej(new Error(src)); };
+      document.head.appendChild(s);
+    });
+  }
+  function text(url) { return fetch(url, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(url); return r.text(); }); }
+  function put(p, content) {
+    return fetch('/__build', { method: 'POST', headers: { 'X-Path': encodeURIComponent(p) }, body: content })
+      .then(function (r) { if (!r.ok) throw new Error('No se pudo escribir ' + p); });
+  }
+  function fnv(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
+
+  async function run() {
+    log.textContent = 'Compilando…';
+    var keys = [];
+    CT.allCats().forEach(function (c) { if (c.data && keys.indexOf(c.data) < 0) keys.push(c.data); });
+    for (var k of keys) await loadScript('../data/products/' + k + '.js?' + Date.now());
+    var copies = {};
+    for (var f of STATIC) copies['assets/' + f] = await text('../static/' + f);
+    copies['favicon.svg'] = await text('../static/favicon.svg');
+    copies['data/catalog.js'] = await text('../data/catalog.js');
+    copies['data/seo.js'] = await text('../data/seo.js');
+    for (var k2 of keys) copies['data/products/' + k2 + '.js'] = await text('../data/products/' + k2 + '.js');
+    var version = fnv(Object.keys(copies).sort().map(function (p) { return copies[p]; }).join('\u0000'));
+    var t0 = performance.now();
+    var out = CTGen.build({ version: version });
+    say('Generado en ' + Math.round(performance.now() - t0) + ' ms. Escribiendo archivos…');
+    var r = await fetch('/__clean', { method: 'POST' });
+    if (!r.ok) throw new Error('El servidor no admite compilación: arráncalo con -Dev');
+    var all = Object.assign({}, copies, out.files), names = Object.keys(all);
+    for (var i = 0; i < names.length; i++) await put(names[i], all[names[i]]);
+    var rep = out.report;
+    say('✔ ' + names.length + ' archivos escritos en dist/');
+    say('Páginas: ' + rep.pages + ' (' + rep.indexable + ' indexables, en el sitemap)');
+    say('Comparaciones: ' + rep.pairsIndexed + ' indexables de ' + rep.pairsChecked + ' posibles');
+    say('Fichas de producto indexables: ' + rep.productsIndexed + ' de ' + rep.products);
+    say('Categorías indexables: ' + rep.categoriesIndexed);
+    window.__buildReport = rep;
+  }
+  document.getElementById('go').addEventListener('click', function () {
+    run().catch(function (e) { say('✖ ' + e.message); window.__buildError = e.message; });
+  });
+})();
+</script>
+</body>
+</html>
